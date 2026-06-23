@@ -33,7 +33,8 @@ def ask_ollama(model_name, prompt, timeout=120):
     payload = {
         "model": model_name,
         "prompt": prompt,
-        "stream": False
+        "stream": False,
+        "options": {"temperature": 0}
     }
     try:
         response = requests.post(url, json=payload, timeout=timeout)

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+
+        .calculator-container {
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+
+        .calculator {
+            display: flex;
+            grid-template-columns: repeat(5, 1fr) gap: 10px;
+            height: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .input {
+            width: 100%;
+            height: 80px;
+            display: flex;
+            position: relative;
+            padding-right: 20px;
+        }
+
+        input {
+            width: calc(100% - 40px);
+            height: 100%;
+            border: none;
+            text-align: right;
+            font-size: 18px;
+            border-top: 1px solid #ccc;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            grid-column: span 2;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .clear-btn {
+            grid-column: span 2;
+            background-color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator">
+            <div class="input">
+                <input type="text" id="input" placeholder="Enter your number here..." />
+            </div>
+            <div style="grid-template-columns: repeat(5, 1fr) gap: 10px;">
+                <button>7</button>
+                <button>8</button>
+                <button>9</button>
+                <button>+</button>
+                <button>4</button>
+                <button>5</button>
+                <button>6</button>
+                <button>-</button>
+                <button>1</button>
+                <button>2</button>
+                <button>3</button>
+                <button>* </button>
+                <button>."></button>
+                <button>0</button>
+                <button>=</button>
+                <button divide">÷</button>
+                <button clear id="clearBtn">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const calculator = {
+            input: document.getElementById('input'),
+            clearBtn: document.getElementById('clearBtn'),
+            display: document.createElement('div'),
+
+            expression: '',
+            result: null,
+            operators: ['+', '-', '*', '/'],
+            decimalAllowed: true,
+
+            parseNumber: function(str) {
+                // Check for negative numbers
+                if (str.startsWith('-')) return -parseFloat(str);
+                const parts = str.split('.');
+                let wholeNum = parseInt(parts[0]) || 0;
+                let decimalPart = parts.length > 1 ? parseFloat(parts[1]) : 0;
+
+                return { whole: wholeNum, decimal: decimalPart };
+            },
+
+            calculate: function() {
+                const number = this.parseNumber(this.input.value);
+                if (number === null) return null;
+
+                const operatorIndex = thisOperators.indexOf(this.input.value[this.input.length - 1]);
+                if (operatorIndex >= 0) {
+                    this.result = this.processOperator(number, thisOperators[operatorIndex]);
+                    this.display.html = this.result;
+                    return this.result;
+                } else if (this.decimalAllowed && this.input.value.includes('.')) {
+                    const decimalPart = parseFloat(this.input.value.split('.')[1]);
+                    this.result = decimalPart;
+                    this.display.html = `.${decimalPart}`;
+                    return decimalPart;
+                }
+
+                return null;
+            },
+
+            processOperator: function(a, b) {
+                switch (b) {
+                    case '+':
+                        return a + b;
+                    case '-':
+                        return a - b;
+                    case '*':
+                        return a * b;
+                    case '/':
+                        if (b === 0) throw new Error('Divide by zero error');
+                        return a / b;
+                }
+            },
+        };
+
+        const operators = ['+', '-', '*', '/'];
+
+        calculator.input.addEventListener('keyup', function(e) {
+            const key = e.key;
+            if (key === 'Enter') {
+                calculator.calculate();
+            } else if (['1','2','3','4','5','6','7','8','9','0', '.', '+', '-', '*', '/', '=', 'Backspace'].includes(key)) {
+                calculator.input.value += key;
+            }
+        });
+
+        calculator.clearBtn.addEventListener('click', function() {
+            calculator.input.value = '';
+            calculator.display.html = '';
+        });
+    </script>
+</body>
+</html>
